@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: bump redis image
-        uses: digitalservicebund/github-actions/bump-chainguard-digest@961e1cd525f8af56785a024bafc2b3b6a2f7449a
+        uses: digitalservicebund/bump-chainguard-digest@LATEST_HASH
         with:
           image_name: redis
           file_path: manifests/base/redis-deployment.yaml
@@ -39,4 +39,4 @@ jobs:
 
 > **Note**
 >
-> Triggering another github workflow (e.g. a build pipeline) does not work automatically via the [push trigger](https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#push). You'll need to trigger the workflow manually ([e.g. via the github cli](https://github.com/digitalservicebund/ris-backend-service/blob/141a80325c271fa0a6f36ca5a6a03618fe110142/.github/workflows/bump_images.yml#L28))
+> Triggering another github workflow (e.g. a build pipeline) does not work automatically via the [push trigger](https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#push). You'll need to trigger the workflow manually.
