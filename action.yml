@@ -8,12 +8,6 @@ inputs:
   file_path:
     required: true
     description: "Path to the file where the image is located (e.g frontend/Dockerfile)."
-  github_token:
-    required: true
-    description: "GitHub token for API access."
-
-permissions:
-  contents: write
 
 runs:
   using: "composite"
@@ -42,8 +36,6 @@ runs:
         sed -i -E "s|(${{ inputs.image_name }}@)[^ ]*|\1$IMAGE_DIGEST|g" ${{ inputs.file_path }}
     - name: Commit and push changes
       shell: bash
-      env:
-        GITHUB_TOKEN: ${{ inputs.github_token }}
       run: |
         set -ex
         git config user.name "${{ github.workflow }}"
