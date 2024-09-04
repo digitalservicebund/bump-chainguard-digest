@@ -52,6 +52,7 @@ runs:
       run: |
         set -ex
         export IMAGE_SHA=`echo $IMAGE_DIGEST| cut -d : -f 2`
+        echo "IMAGE_SHA=$IMAGE_SHA" >> $GITHUB_ENV
         echo "PR_BRANCH=bump-chainguard-digest/${{ inputs.file_path }}/${{ inputs.image_name }}-$IMAGE_SHA" >> $GITHUB_ENV
     - name: Create Pull Request
       if: env.files_changed == 'yes'
@@ -65,7 +66,7 @@ runs:
         git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
         git checkout -b $PR_BRANCH
         git add ${{ inputs.file_path }}
-        git commit -m "chore(deps): bump chainguard image ${{ inputs.image_name }} to $IMAGE_DIGEST"
+        git commit -m "chore(deps): bump chainguard image ${{ inputs.image_name }} to $IMAGE_SHA"
         git push -f origin $PR_BRANCH
         gh pr create --fill
     - name: Auto-merge Pull Request
