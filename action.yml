@@ -51,7 +51,8 @@ runs:
       shell: bash
       run: |
         set -ex
-        echo "PR_BRANCH=bump-chainguard-digest/${{ inputs.file_path }}/${{ inputs.image_name }}-$IMAGE_DIGEST" >> $GITHUB_ENV
+        export IMAGE_SHA=`echo $IMAGE_DIGEST| cut -d : -f 2`
+        echo "PR_BRANCH=bump-chainguard-digest/${{ inputs.file_path }}/${{ inputs.image_name }}-$IMAGE_SHA" >> $GITHUB_ENV
     - name: Create Pull Request
       if: env.files_changed == 'yes'
       shell: bash
