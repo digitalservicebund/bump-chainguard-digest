@@ -70,7 +70,7 @@ runs:
         git push -f origin $PR_BRANCH
         gh pr create --fill
     - name: Auto-merge Pull Request
-      if: ${{ inputs.auto_merge }} == 'true' && env.files_changed == 'yes'
+      if: (inputs.auto_merge == 'true') && (env.files_changed == 'yes')
       env:
         GITHUB_TOKEN: ${{ inputs.github_token }}
       shell: bash
