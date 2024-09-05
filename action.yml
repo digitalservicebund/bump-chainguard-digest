@@ -68,7 +68,7 @@ runs:
         git add ${{ inputs.file_path }}
         git commit -m "chore(deps): bump chainguard image ${{ inputs.image_name }} to $IMAGE_SHA"
         git push -f origin $PR_BRANCH
-        gh pr create --fill
+        test "`gh pr view --json closed -q .closed || echo true`" = "true" && gh pr create --fill
     - name: Auto-merge Pull Request
       if: (inputs.auto_merge == 'true') && (env.files_changed == 'yes')
       env:
