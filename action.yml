@@ -11,6 +11,11 @@ inputs:
   github_token:
     required: true
     description: "GitHub token for pushing changes."
+  branch:
+    required: false
+    default: "main"
+    description: "Branch to push the changes to."
+
 
 runs:
   using: "composite"
@@ -46,7 +51,19 @@ runs:
         git config user.name "${{ github.workflow }}"
         # This email identifies the commit as GitHub Actions - see https://github.com/orgs/community/discussions/26560
         git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        if [[ ${{inputs.branch}} != 'main' ]]; then
+          git checkout -B ${{ inputs.branch }}
+        fi
         git add ${{ inputs.file_path }}
         git diff-index --cached --quiet HEAD ||
           git commit -m "Bump chainguard image for ${{ inputs.image_name }}" -m "[skip ci]" &&
-          git push origin main
+          git push origin ${{ inputs.branch }}
+    - name: Create PR for branch ${{ inputs.branch }}
+      if: ${{ inputs.branch != 'main' }}
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{ inputs.github_token }}
+      run: |
+        set -ex
+        gh pr create --title "Bump chainguard image for ${{ inputs.image_name }}" --base main --head ${{ inputs.branch }}
+
