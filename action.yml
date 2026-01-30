@@ -65,5 +65,5 @@ runs:
         GITHUB_TOKEN: ${{ inputs.github_token }}
       run: |
         set -ex
-        gh pr create --title "Bump chainguard image for ${{ inputs.image_name }}" --base main --head ${{ inputs.branch }}
+        gh pr create --title "Bump chainguard image for ${{ inputs.image_name }}" --fill --base main --head ${{ inputs.branch }}
 
