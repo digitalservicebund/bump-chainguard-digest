@@ -21,7 +21,7 @@ runs:
   using: "composite"
   steps:
     - name: Checkout repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
     - name: Construct full image name for ${{ inputs.image_name }}
       shell: bash
       run: |
