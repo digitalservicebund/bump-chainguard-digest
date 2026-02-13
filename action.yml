@@ -51,19 +51,32 @@ runs:
         git config user.name "${{ github.workflow }}"
         # This email identifies the commit as GitHub Actions - see https://github.com/orgs/community/discussions/26560
         git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        
         if [[ ${{inputs.branch}} != 'main' ]]; then
           git checkout -B ${{ inputs.branch }}
         fi
+        
         git add ${{ inputs.file_path }}
-        git diff-index --cached --quiet HEAD ||
-          git commit -m "Bump chainguard image for ${{ inputs.image_name }}" -m "[skip ci]" &&
-          git push origin ${{ inputs.branch }}
+        
+        if ! git diff-index --cached --quiet HEAD; then
+          git commit -m "Bump chainguard image for ${{ inputs.image_name }}" -m "[skip ci]"
+          git push origin ${{ inputs.branch }} --force
+          echo "HAS_CHANGES=true" >> $GITHUB_ENV
+        else
+          echo "No changes detected. Skipping push and PR."
+          echo "HAS_CHANGES=false" >> $GITHUB_ENV
+        fi
     - name: Create PR for branch ${{ inputs.branch }}
-      if: ${{ inputs.branch != 'main' }}
+      if: ${{ inputs.branch != 'main' && env.HAS_CHANGES == 'true' }}
       shell: bash
       env:
         GITHUB_TOKEN: ${{ inputs.github_token }}
       run: |
         set -ex
-        gh pr create --title "Bump chainguard image for ${{ inputs.image_name }}" --fill --base main --head ${{ inputs.branch }}
-
+        PR_EXISTS=$(gh pr list --head ${{ inputs.branch }} --json number --jq '.[0].number')
+          
+        if [ -z "$PR_EXISTS" ]; then
+          gh pr create --title "Bump chainguard image for ${{ inputs.image_name }}" --fill --base main --head ${{ inputs.branch }}
+        else
+          echo "PR already exists for ${{ inputs.branch }}. GitHub will update it automatically."
+        fi
