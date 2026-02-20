@@ -59,7 +59,7 @@ runs:
         git add ${{ inputs.file_path }}
         
         if ! git diff-index --cached --quiet HEAD; then
-          git commit -m "Bump chainguard image for ${{ inputs.image_name }}" -m "[skip ci]"
+          git commit -m "Bump chainguard image for ${{ inputs.image_name }}"
           git push origin ${{ inputs.branch }} --force
           echo "HAS_CHANGES=true" >> $GITHUB_ENV
         else
