@@ -31,11 +31,11 @@ jobs:
 
 ### inputs:
 
-| input          | info                                                                                                                                    |
-| -------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| `image_name`   | name of the image to check for (e.g. `nginx`)                                                                                           |
-| `file_path`    | path to the file where the image is located (e.g `frontend/Dockerfile`)                                                                 |
-| `github_token` | required for using the github api to make commits (steps inside composite github actions cannot directly access the `secrets` context). |
+| input          | info                                                                                                                                                                                                                                                                                       |
+|----------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `image_name`   | name of the image to check for (e.g. `nginx`)<br> May include a tag to handle cases different from `:latest`<br>a) `nginx:latest-dev` -> replaces only `nginx:latest-dev@sha256:...` with sha from `:latest-dev`<br>b) `nginx` -> replaces only `nginx@sha256:...` with sha from `:latest` |
+| `file_path`    | path to the file where the image is located (e.g `frontend/Dockerfile`)                                                                                                                                                                                                                    |
+| `github_token` | required for using the github api to make commits (steps inside composite github actions cannot directly access the `secrets` context).                                                                                                                                                    |
 
 > **Note**
 >

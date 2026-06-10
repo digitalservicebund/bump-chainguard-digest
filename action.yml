@@ -4,7 +4,11 @@ description: "Bumps digests of chainguard images. For nightly jobs."
 inputs:
   image_name:
     required: true
-    description: "Name of the image to check for (e.g. nginx)."
+    description: | 
+      Name of the image to check for (e.g. nginx). 
+      May include a tag, then only replaces the digest for images with tag 
+      1) nginx:latest-dev -> replaces only nginx:latest-dev@sha256:...
+      2) nginx -> replaces only nginx@sha256:... with sha from latest
   file_path:
     required: true
     description: "Path to the file where the image is located (e.g frontend/Dockerfile)."
@@ -26,7 +30,16 @@ runs:
       shell: bash
       run: |
         set -ex
-        echo "FULL_IMAGE_NAME=cgr.dev/chainguard/${{ inputs.image_name }}:latest" >> $GITHUB_ENV
+        
+        IMAGE_INPUT="${{ inputs.image_name }}"
+        
+        if [[ "$IMAGE_INPUT" == *":"* ]]; then
+          IMAGE_WITH_TAG="$IMAGE_INPUT"
+        else
+          IMAGE_WITH_TAG="${IMAGE_INPUT}:latest"
+        fi
+        
+        echo "FULL_IMAGE_NAME=cgr.dev/chainguard/${IMAGE_WITH_TAG}" >> $GITHUB_ENV
     - name: Pull latest image
       shell: bash
       run: |
@@ -74,7 +87,7 @@ runs:
       run: |
         set -ex
         PR_EXISTS=$(gh pr list --head ${{ inputs.branch }} --json number --jq '.[0].number')
-          
+        
         if [ -z "$PR_EXISTS" ]; then
           gh pr create --title "Bump chainguard image for ${{ inputs.image_name }}" --fill --base main --head ${{ inputs.branch }}
         else
