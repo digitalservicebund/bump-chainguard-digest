@@ -19,6 +19,6 @@ jobs:
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
 
       - name: Semantic Release
-        uses: digitalservicebund/semantic-release-action@44c10ccaba96446fee0f174c5b944fa517eb217c # v1.0.0
+        uses: digitalservicebund/semantic-release-action@e3acd4f7485a1c60f6c67b9c7257297461c16008 # v1.0.0
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
